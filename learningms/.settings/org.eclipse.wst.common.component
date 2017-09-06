@@ -3,6 +3,7 @@
     <wb-module deploy-name="learningms">
         <wb-resource deploy-path="/" source-path="/WebRoot"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/resources"/>
         <property name="context-root" value="/learningms"/>
         <property name="java-output-path" value="/learningms/WebRoot/WEB-INF/classes"/>
     </wb-module>
