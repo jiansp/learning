@@ -53,5 +53,44 @@
 	<bean
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver"
 		p:prefix="/WEB-INF/pages/" p:suffix=".jsp" />
+	
+	<!-- 要执行的类	 -->
+	<bean id="jobExecuter" class="com.learningms.system.service.impl.JobExecuter" />
+	
+	<!-- 每分钟执行task -->		 
+	<bean id="everyMinuteTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		 
+		<property name="targetObject">
+			<ref bean="jobExecuter" />
+		</property>
+		 
+		<property name="targetMethod">
+			<value>everyMinute</value>
+		</property>
+	</bean>
+	
+	<!--  每分钟执行表达式 -->
+	<bean id="erverMinuteTime"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="everyMinuteTask" />
+		</property>
+		 
+		<property name="cronExpression">
+			<value>*/3 * * * * ?</value>
+		</property>
+		 
+	</bean>
+	
+	<!-- 总管理类 如果将lazy-init='false'那么容器启动就会执行调度程序   -->
+	<bean id="startQuertz" lazy-init="false" autowire="no"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="erverMinuteTime"/>
+			</list>
+		</property>
+	</bean>	
 
 </beans>

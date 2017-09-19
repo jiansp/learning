@@ -1,13 +1,17 @@
 package com.learningms.system.dao.impl;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 
 import com.learningms.system.dao.BaseDao;
 import com.learningms.system.model.ParamConfig;
@@ -143,5 +147,27 @@ public class BaseDaoImpl implements BaseDao{
 		List ret = query.list();
 		return ret;
 	}
+	
+	public Map findMapBySql(String sql)
+	  {
+	    Query query = getCurrentSession().createSQLQuery(sql)
+	      .setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+	    Map hashMap = new HashMap();
+	    List list = query.list();
+	    String key = "";
+	    String value = "";
+	    for (Object objList : list)
+	    {
+	      Map map = (Map)objList;
+	      Set keyset = map.keySet();
+	      for (Object object : keyset) {
+	        key = key + object.toString() + "|";
+	      }
+	      hashMap.put(map.get(key.split("|")[1]), map.get(key.split("|")[3]));
+	    }
+	    return hashMap;
+	  }
+	  
+	 
 	
 }
