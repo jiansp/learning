@@ -1,0 +1,99 @@
+package com.learningms.util;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
+
+/**
+ * 权限拦截
+ * @ClassName: SecurityInterceptor
+ * @Description: TODO
+ * @author robo
+ * @date 2014-7-8 下午2:04:30
+ *
+ */
+public class SecurityInterceptor implements HandlerInterceptor {
+
+	private List<String> excludeUrls;// 不需要拦截的资源
+
+	public List<String> getExcludeUrls() {
+		return excludeUrls;
+	}
+
+	public void setExcludeUrls(List<String> excludeUrls) {
+		this.excludeUrls = excludeUrls;
+	}
+
+	/**
+	 * 完成页面的render后调用
+	 */ 
+	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object object,
+			Exception exception) throws Exception {
+
+	}
+
+	/**
+	 * 在调用controller具体方法后拦截
+	 */
+	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object object,
+			ModelAndView modelAndView) throws Exception {
+
+	}
+
+
+	/**
+	 * 在调用controller具体方法前拦截
+	 */
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object object) throws Exception {
+		String requestUri = request.getRequestURI();
+		String contextPath = request.getContextPath();
+		String url = requestUri.substring(contextPath.length());
+		//SessionInfo sessionInfo = (SessionInfo) request.getSession().getAttribute(Constant.CURRENT_USER);
+		//判断是否包含在菜单权限里
+
+		if ((url.indexOf("/admin/") > -1) || excludeUrls.contains(url)) {// 如果要访问的资源是不需要验证的
+			return true;
+		}
+		
+		/**
+		if ((sessionInfo == null) || (sessionInfo.getId() == null)) {// 如果没有登录或登录超时
+			request.setAttribute("msg", "您还没有登录或登录已超时，请重新登录，然后再刷新本功能！");
+			request.getRequestDispatcher("/error/noSession.jsp").forward(request, response);
+			return false;
+		}*/
+		
+		/**
+		if(!sessionInfo.getResourceAllList().contains(url)){
+			return true;
+		}
+
+		if (!sessionInfo.getResourceList().contains(url)) {// 如果当前用户没有访问此资源的权限
+			request.setAttribute("msg", "您没有访问此资源的权限！<br/>请联系超管赋予您<br/>[" + url + "]<br/>的资源访问权限！");
+			request.getRequestDispatcher("/error/noSecurity.jsp").forward(request, response);
+			return false;
+		}*/
+
+		String path = request.getContextPath();
+		if (request.getSession().getAttribute("currentUser") == null) {
+			// 判断是否是ajax请求
+			if (request.getHeader("x-requested-with") != null
+					&& request.getHeader("x-requested-with").equalsIgnoreCase(
+							"XMLHttpRequest")) {
+				// 如果是ajax请求响应头会有，x-requested-with；
+				response.setHeader("sessionstatus", "timeout");// 在响应头设置session状态
+				response.getWriter().print("timeout"); // 打印一个返回值，
+				return false;
+			} else {
+				response.sendRedirect(path + "/sessionout.jsp");
+				return false;
+			}
+		} else {
+			return true;
+		}
+
+	}
+}

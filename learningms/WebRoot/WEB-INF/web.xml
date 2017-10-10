@@ -6,7 +6,7 @@
 	http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
   <display-name>leaningms</display-name>	
   <welcome-file-list>
-    <welcome-file>/WEB-INF/pages/index.jsp</welcome-file>
+    <welcome-file>/WEB-INF/pages/login.jsp</welcome-file>
   </welcome-file-list>
   <!-- 1.开启spring功能 -->
   <listener>
@@ -140,5 +140,10 @@
 		<servlet-name>default</servlet-name>
 		<url-pattern>*.swf</url-pattern>
 	</servlet-mapping>
+	
+	<!-- 配置session超时时间，单位分钟 -->
+	<session-config>
+		<session-timeout>1</session-timeout>
+	</session-config>
   
 </web-app>

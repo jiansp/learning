@@ -78,7 +78,7 @@
 		</property>
 		 
 		<property name="cronExpression">
-			<value>*/3 * * * * ?</value>
+			<value>0 */5 * * * ?</value>
 		</property>
 		 
 	</bean>
@@ -92,5 +92,20 @@
 			</list>
 		</property>
 	</bean>	
+	
+	<!-- 拦截器 -->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**" />
+			<bean class="com.learningms.util.SecurityInterceptor">
+				<!-- 不需要权限验证的地址 -->
+				<property name="excludeUrls">
+					<list>
+						<value>/login/login</value>
+					</list>
+				</property>
+			</bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
 
 </beans>
